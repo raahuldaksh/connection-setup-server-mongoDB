@@ -1,48 +1,35 @@
-# Node.js MongoDB Notes API
+# MongoDB Connection Setup
 
-A small Express and Mongoose learning project. It connects a Node.js backend to MongoDB and saves notes through an API endpoint.
-
-## Requirements
-
-- Node.js and npm
-- A MongoDB instance, such as MongoDB Atlas
-- Postman or another HTTP client (optional)
+A small Express API for practising a MongoDB connection with Mongoose and saving notes.
 
 ## Run locally
 
-Open a terminal in this folder and run:
+You need Node.js, npm, and a MongoDB connection string. From this folder, run:
 
 ```powershell
 npm install
-$env:MONGODB_URI = "mongodb+srv://<db-user>:<url-encoded-password>@<cluster-host>/<database>?retryWrites=true&w=majority"
+$env:MONGODB_URI = "mongodb+srv://<username>:<url-encoded-password>@<cluster>/<database>?retryWrites=true&w=majority"
 npm start
 ```
 
-Replace the placeholders with your MongoDB connection details. Keep the connection string in the `MONGODB_URI` environment variable; do not put real credentials in source files or commit them. The variable is set for the current PowerShell session only. In other shells, set the same environment variable using that shell's syntax.
+In MongoDB Atlas, create a database user and allow your IP address under **Network Access**. Replace the placeholders above with your own connection details. Keep the URI in the environment variable; don't add real credentials to source files or commits.
 
-For MongoDB Atlas, create a database user and allow your client IP address in Network Access before connecting. URL-encode special characters in the database user's password.
+The server runs at `http://localhost:3000`.
 
-The server listens on `http://localhost:3000`.
+## Routes
 
-## Save a note
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `GET` | `/` | Check that the server is running |
+| `POST` | `/create` | Save a note to MongoDB |
 
-Send a `POST` request to `http://localhost:3000/create` with a JSON body:
+Example request body for `POST /create`:
 
 ```json
 {
-  "title": "My first note",
-  "discription": "Saved from the backend API"
+  "title": "First note",
+  "discription": "A note saved in MongoDB"
 }
 ```
 
-PowerShell example:
-
-```powershell
-Invoke-RestMethod -Uri http://localhost:3000/create -Method Post -ContentType "application/json" -Body '{"title":"My first note","discription":"Saved from the backend API"}'
-```
-
-The endpoint creates a note with the Mongoose model in `src/models/note.model.js` and stores it in MongoDB. `GET /` confirms that the server is running.
-
-## Security
-
-Never commit `.env` files, database connection strings, or passwords. If a database credential was previously stored in source code or shared, rotate it in MongoDB Atlas.
+The request field is spelled `discription` in the current model. The database connection is configured in `src/config/db.js`, and the note schema is in `src/models/note.model.js`.
